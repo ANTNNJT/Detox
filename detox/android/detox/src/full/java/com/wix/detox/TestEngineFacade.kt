@@ -15,7 +15,7 @@ class TestEngineFacade {
         null
     }
     fun syncIdle() = UiAutomatorHelper.espressoSync() // TODO Check whether this can be replaced with #awaitIdle()
-    fun getBusyIdlingResources() = EspressoDetox.getBusyEspressoResources() as List<IdlingResource>
+    fun getBusyIdlingResources(): MutableList<IdlingResource> = EspressoDetox.getBusyEspressoResources()
     fun reloadReactNative(appContext: Context) = ReactNativeExtension.reloadReactNative(appContext)
     fun resetReactNative() = ReactNativeExtension.clearAllSynchronization()
 }

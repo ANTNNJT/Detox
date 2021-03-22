@@ -2,13 +2,10 @@ package com.wix.detox
 
 import android.content.Context
 import android.util.Log
-import androidx.test.espresso.IdlingResource
 import com.wix.detox.common.extractRootCause
 import com.wix.detox.instruments.DetoxInstrumentsException
 import com.wix.detox.instruments.DetoxInstrumentsManager
 import com.wix.invoke.MethodInvocation
-import org.json.JSONArray
-import org.json.JSONException
 import org.json.JSONObject
 import java.lang.reflect.InvocationTargetException
 
@@ -99,20 +96,21 @@ class QueryStatusActionHandler(
     : DetoxActionHandler {
 
     override fun handle(params: String, messageId: Long) {
+        Log.w(LOG_TAG, "QueryStatusActionHandler.handle()!")
+
         val data = mutableMapOf<String, Any>()
         val busyResources = testEngineFacade.getBusyIdlingResources()
-        var status = ""
 
-        if (busyResources.isEmpty()) {
-            status = "The app is idle."
-        } else {
-            status = "Busy idling resources:\n"
-            for (res in busyResources) {
-                status += "\t- ${res.name}\n"
-            }
+        data["status"] =
+            if (busyResources.isEmpty()) {
+                "The app is idle."
+            } else {
+                var _status = "Busy idling resources:\n"
+                for (res in busyResources) {
+                    _status += "\t- ${res.name}\n"
+                }
+                _status
         }
-
-        data["status"] = status
         wsClient.sendAction("currentStatusResult", data, messageId)
     }
 }
